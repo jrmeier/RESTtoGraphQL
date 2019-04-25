@@ -1,0 +1,26 @@
+{
+  "comments": false,
+  "presets": ["@babel/env"], 
+
+  "ignore":[
+    ".serverless/",
+    "/node_modules/"
+  ],
+  "plugins": [
+    "babel-plugin-root-import",
+    "dynamic-import-node",
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-function-bind",
+
+  ],
+  "env": {
+    "test": {
+      "presets": ["@babel/env"], 
+      "plugins":[
+        "babel-plugin-root-import",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-proposal-function-bind",
+    ]
+    }
+  }
+}
