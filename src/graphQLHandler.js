@@ -27,6 +27,8 @@ export const graphqlRootBasic = {
   }
 }
 
+// const async 
+
 
 // var app = express();
 // app.use('/graphql', graphqlHTTP({
