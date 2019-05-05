@@ -1,3 +1,10 @@
+import {
+  getAllUsers,
+  getUser,
+  updateUserById,
+  createNewUser,
+  deleteUserById
+} from './userResources'
 export const userGetHandler = dbPromise => async (req, res) => {
   const { query } = req
   const queryKeys = Object.keys(query)
@@ -5,7 +12,7 @@ export const userGetHandler = dbPromise => async (req, res) => {
   let result;
   
   if (queryKeys.length){
-    result = await getUserByEmail(db, query)
+    result = await getUser(db, query)
   }
 
   if(!result){
@@ -41,17 +48,3 @@ export const userDeleteHandler = dbPromise => async (req, res) => {
   const result = await deleteUserById(db, body._id)
   return res.send(result)
 }
-
-
-
-const getUserByEmail = async (db, param) => await db.models.User.find({...param})
-const getAllUsers = async db => await db.models.User.find()
-
-const updateUserById = async (db, updateObject) => 
-  await db.models.User({_id: updateObject._id, ...updateObject})
-
-const createNewUser = async (db, newUserObject) => 
-  await new db.models.User(newUserObject).save()
-
-const deleteUserById = async (db, _id) =>
-  await db.models.User({_id}).remove()
