@@ -5,7 +5,8 @@ import {
   createNewUser,
   getUser,
   deleteUser,
-  deleteUserMany
+  deleteUserMany,
+  getJokeById
 } from './userResources'
 export const graphqlSchemaBasic = buildSchema(`
 scalar Date
@@ -18,8 +19,9 @@ Only Oneliners and Dad jokes are avaliable
   }
 
   type JokeType {
-    type: JokeTypeEnum,
-    line: String
+    type: JokeTypeEnum
+    joke: String
+    id: String
   }
 
   type UserType {
@@ -68,21 +70,27 @@ Only Oneliners and Dad jokes are avaliable
   // }
 
 export const graphqlRootBasic = {
-  getJoke: (args) => {
-    const { JokeType } = args
-    return "going to get the joke now"
-  },
-  hello: (args) => {
-    console.log(args)
-    return "nice"
-  },
   UserMany: async (args, context) => {
     const db = await context
     return await getUser(db, args.filter)
   },
   UserOne: async (args, context) => {
     const db = await context
-    return (await getUser(db, args.filter)).shift()
+    const user = (await getUser(db, args.filter)).shift()
+    const { favorite_joke_id } = user
+    const joke = await getJokeById({id: favorite_joke_id})
+    console.log(joke)
+    return {
+      ...user,
+      favorite_joke: {
+        id: "12",
+        joke: "So a blind guy walks into a bar. He never saw it coming."
+      }
+    }
+  },
+  joke: (args) => {
+    const { JokeType } = args
+    return "going to get the joke now"
   },
   UserUpdateOne: async (args, context) => {
     const db = await context
