@@ -24,7 +24,7 @@ export const getUser = async (db, param) => {
 }
 export const getAllUsers = async db => await db.models.User.find()
 
-export async function getJoke ({id = 'null'})  {
+export async function getJoke (id = null)  {
   const headers = {
     'User-Agent': 'Super Agent/0.0.1',
     'Accept': 'application/json'
@@ -35,7 +35,8 @@ export async function getJoke ({id = 'null'})  {
     url += '/j/'+id
   }
   const joke = await request.get(url).set('Accept', 'application/json')
-  if(joke.body.joke === 200 ){
+  // console.log(joke.body)
+  if(joke.body.status=== 200 ){
     return joke.body
   } 
   return {}

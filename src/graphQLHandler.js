@@ -18,16 +18,29 @@ Only Oneliners and Dad jokes are avaliable
   }
 
   type JokeType {
-    joke: String
+    line: String!
     id: String
+  }
+  enum GroanTypeEnum {
+    LOL
+    SIGH
+    JUST_SAD
+  }
+  """
+  Monitors the delivery of the joke
+  """
+  type GroanType {
+    joke_id: String
+    user_id: String
+    rating: GroanTypeEnum
   }
 
   type UserType {
-    email: String
     name: String
-    phone_number: String
-    zip_code: String
+    age: Int
+    email: String
     created: Date
+    favorite_joke: JokeType
     _id: String
 
   }
@@ -45,13 +58,31 @@ Only Oneliners and Dad jokes are avaliable
     numRemoved: Int
   }
 
-  """
-  Basic usage
-  """
   type Query {
+    """
+    HelloWorld
+    """
     Hello(name: String): HelloType
+
+    """
+    Returns a single user matching the filter criteria
+    """
     UserOne(filter: UserInputType): UserType
-    UserMany(filter: UserInputType): [UserType]
+    
+    """
+    Returns many users matching the filter criteria
+    """
+    UserMany(filter: UserInputType, Limit: Int): [UserType]
+
+    """
+    There's always a groan, this is how we track it
+    """
+    Groan: GroanType
+
+    """
+    This is actually coming from a third party REST API
+    """
+    Joke: JokeType
   }
 
   type Mutation {
@@ -73,7 +104,22 @@ export const graphqlRootBasic = {
       return {
         message: `Hello, ${name}`
       }
-  }
+  },
+  Joke: async (args, context) => {
+    const { id } = args
+    const returnObj = {
+      line: "",
+      id: ""
+    }
+    
+    const joke = await getJoke(id)
+
+    return {
+      line: joke.joke,
+      id: joke.id
+    }
+    return returnObj
+  },
   UserMany: async (args, context) => {
     const db = await context
     return await getUser(db, args.filter)
@@ -97,10 +143,6 @@ export const graphqlRootBasic = {
     return {
       ...user
     }
-  },
-  joke: (args) => {
-    const { JokeType } = args
-    return "going to get the joke now"
   },
   UserUpdateOne: async (args, context) => {
     const db = await context
@@ -130,8 +172,10 @@ export const graphqlRootBasic = {
   },
 
   UserRemoveMany: async (args, context) => {
+    console.log("asdfasdf")
     const db = await context
     const { filter } = args
+    console.log("filter: ", filter, args)
     const { deletedCount }= await deleteUserMany(db, filter)
     return {
       numRemoved: deletedCount
