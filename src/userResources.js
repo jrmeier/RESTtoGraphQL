@@ -1,6 +1,4 @@
-import request from 'request'
-import { objectExpression, objectTypeAnnotation, conditionalExpression } from '@babel/types';
-
+import request from 'superagent-bluebird-promise'
 export const updateUserById = async (db, filter, updateObject) => {
   console.log(filter, updateObject)
   const res = await db.models.User.findOneAndUpdate(filter, updateObject)
@@ -26,34 +24,24 @@ export const getUser = async (db, param) => {
 }
 export const getAllUsers = async db => await db.models.User.find()
 
-export const getJoke = async ({id = null}) => {
+export async function getJoke ({id = 'null'})  {
   const headers = {
     'User-Agent': 'Super Agent/0.0.1',
     'Accept': 'application/json'
   }
   let url = 'https://icanhazdadjoke.com'
+  
   if(id){
-    url += '/j/'+id.toString()
+    url += '/j/'+id
   }
-  const options = {
-    url,
-    method: 'GET',
-    headers: headers,
-  }
-
-  const final = {}
-
-  request(options, (error, response, body) => {
-    if(!error) {
-        final.id = body.id,
-        final.joke = body.joke
-    }
-
-  })
-
-  return final
+  const joke = await request.get(url).set('Accept', 'application/json')
+  if(joke.body.joke === 200 ){
+    return joke.body
+  } 
+  return {}
 } 
 
 export const getJokeById = async (id) => {
-  return getJoke(id)
+  const joke = await getJoke(id)
+  return joke.joke
 }

@@ -6,20 +6,18 @@ import {
   getUser,
   deleteUser,
   deleteUserMany,
-  getJokeById
+  getJoke,
 } from './userResources'
 export const graphqlSchemaBasic = buildSchema(`
 scalar Date
 """
 Only Oneliners and Dad jokes are avaliable
 """
-  enum JokeTypeEnum {
-     OneLiner
-     DadJoke
+  type HelloType {
+    message: String
   }
 
   type JokeType {
-    type: JokeTypeEnum
     joke: String
     id: String
   }
@@ -31,7 +29,6 @@ Only Oneliners and Dad jokes are avaliable
     zip_code: String
     created: Date
     _id: String
-    favorite_joke: JokeType
 
   }
 
@@ -52,6 +49,7 @@ Only Oneliners and Dad jokes are avaliable
   Basic usage
   """
   type Query {
+    Hello(name: String): HelloType
     UserOne(filter: UserInputType): UserType
     UserMany(filter: UserInputType): [UserType]
   }
@@ -70,22 +68,34 @@ Only Oneliners and Dad jokes are avaliable
   // }
 
 export const graphqlRootBasic = {
+  Hello: (args, context) => {
+    const { name = "World" } = args
+      return {
+        message: `Hello, ${name}`
+      }
+  }
   UserMany: async (args, context) => {
     const db = await context
     return await getUser(db, args.filter)
   },
   UserOne: async (args, context) => {
     const db = await context
-    const user = (await getUser(db, args.filter)).shift()
-    const { favorite_joke_id } = user
-    const joke = await getJokeById({id: favorite_joke_id})
-    console.log(joke)
+    const user = (await getUser(db, args.filter)).shift().toObject()
+    // const { favorite_joke_id } = user
+    // console.log(favorite_joke_id)
+    // const joke = await getJoke({id: favorite_joke_id})
+    // console.log(joke)
+    // console.log(user)
+    // return {
+    //   ...user,
+    //   favorite_joke: {
+    //     id: '23s',
+    //     joke: 'lol'
+    //   }
+    console.log(Object.keys(user))
+    console.log(user)
     return {
-      ...user,
-      favorite_joke: {
-        id: "12",
-        joke: "So a blind guy walks into a bar. He never saw it coming."
-      }
+      ...user
     }
   },
   joke: (args) => {
@@ -135,13 +145,3 @@ export const graphqlRootBasic = {
   }
 
 }
-
-// const async 
-
-
-// var app = express();
-// app.use('/graphql', graphqlHTTP({
-//   schema: schema,
-//   rootValue: root,
-//   graphiql: true,
-// })

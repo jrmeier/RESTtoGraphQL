@@ -30,4 +30,4 @@ app.delete('/user', userDeleteHandler(db))
 // })
 
 
-app.listen(4000, () => console.log("listening at port 4000"))
+app.listen(6000, () => console.log("listening at port 6000"))
