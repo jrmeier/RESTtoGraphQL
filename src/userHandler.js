@@ -1,50 +1,49 @@
 import {
   getAllUsers,
   getUser,
-  updateUserById,
+  updateUser,
   createNewUser,
   deleteUserById
 } from './userResources'
-export const userGetHandler = dbPromise => async (req, res) => {
-  const { query } = req
-  const queryKeys = Object.keys(query)
-  const db = await dbPromise
-  let result;
-  
-  if (queryKeys.length){
-    result = await getUser(db, query)
-  }
 
-  if(!result){
-    result = await getAllUsers(db)
-  }
+import mongoose from 'mongoose'
+
+export const userGetHandler = context => async (req, res) => {
+  const { query } = req
+  const result = await getUser(query)
   return res.send(result)
 }
-export const userPostHandler = dbPromise => async (req, res) => {
+
+export const userPostHandler = context => async (req, res) => {
   const { body } = req
-  const db = await dbPromise
+  const { _id } = body
   const bodyKeys = Object.keys(body)
   if(!bodyKeys.includes('_id')){
-    res.send({error:'_id required to update'})
+    return res.send({error:'_id required to update'})
   }
 
-  const result = await updateUserById(db, body)
-  res.send(result)
-}
+  delete body[_id]
 
-export const userPutHandler = dbPromise => async (req, res) => {
-  const { body } = req
-  const db = await dbPromise
-  const result = await createNewUser(db, body)
+  const updateObject = {
+    $set: {
+      ...body
+    }
+  }
+  const result = await updateUser({_id}, updateObject)
   return res.send(result)
 }
 
-export const userDeleteHandler = dbPromise => async (req, res) => {
+export const userPutHandler = context => async (req, res) => {
   const { body } = req
-  const db = await dbPromise
+  const result = await createNewUser(body)
+  return res.send(result)
+}
+
+export const userDeleteHandler = context => async (req, res) => {
+  const { body } = req
   if(!Object.keys(body).includes('_id')){
     return res.send({error: '_id required to delete'})
   }
-  const result = await deleteUserById(db, body._id)
+  const result = await deleteUserById(body._id)
   return res.send(result)
 }
