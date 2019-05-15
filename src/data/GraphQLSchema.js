@@ -44,6 +44,8 @@ export const graphqlSchema = buildSchema(`
     This is actually coming from a third party REST API
     """
     Joke(id: String): JokeType
+
+    UserMany(filter: UserInputType): [UserType]
   }
 
   type Mutation {

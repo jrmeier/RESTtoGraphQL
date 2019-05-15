@@ -3,10 +3,17 @@ import {
   getUser,
   updateUser,
   createNewUser,
-  deleteUserById
+  deleteUserById,
+  helloWorld
 } from './userResources'
 
 import mongoose from 'mongoose'
+
+export const helloHandler = context => async (req, res) => {
+  const { query } = req
+  const result = helloWorld(query.name)
+  return res.send(result)
+}
 
 export const userGetHandler = context => async (req, res) => {
   const { query } = req
