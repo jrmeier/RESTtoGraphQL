@@ -7,7 +7,7 @@ A simple example showing off how [GraphQL](https://graphql.org) can simplify dev
 To demonstate how a typical REST api works, there's a single endpoint (`/user`), that can be consumed with the standard `GET`,`POST`,`PUT`,and `DELETE` requests.
 
 ### Create a user
-```curl -X PUT \
+```curl -X POST \
   http://localhost:4000/user \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/json' \
@@ -29,7 +29,7 @@ To demonstate how a typical REST api works, there's a single endpoint (`/user`),
   ```
 
 ### Update a user 
-```curl -X POST \
+```curl -X PUT \
   http://localhost:4000/user \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/json' \

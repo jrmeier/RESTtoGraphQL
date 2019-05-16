@@ -24,7 +24,12 @@ export const userGetHandler = context => async (req, res) => {
 export const userPostHandler = context => async (req, res) => {
   const { body } = req
   const { _id } = body
-  const bodyKeys = Object.keys(body)
+  const result = await createNewUser(body)
+  return res.send(result)
+}
+
+export const userPutHandler = context => async (req, res) => {
+  const { body } = req
   if(!bodyKeys.includes('_id')){
     return res.send({error:'_id required to update'})
   }
@@ -37,12 +42,6 @@ export const userPostHandler = context => async (req, res) => {
     }
   }
   const result = await updateUser({_id}, updateObject)
-  return res.send(result)
-}
-
-export const userPutHandler = context => async (req, res) => {
-  const { body } = req
-  const result = await createNewUser(body)
   return res.send(result)
 }
 
