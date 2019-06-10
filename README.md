@@ -1,4 +1,7 @@
 # REST to GraphQL
+This is a talk I gave for [DSMJS](https://dsmjs.com/2019/05/14/meeting.html), demonstrating how a transition from a RESTFUL API to a GraphQL based API could look. 
+
+Link to slides is [here](https://drive.google.com/open?id=1f1Y2-HRyklElmtm2p9Wu94ppQPhVRUN5BfZgYL4Fz7w).
 
 A simple example showing off how [GraphQL](https://graphql.org) can simplify developement for API consumers.
 
